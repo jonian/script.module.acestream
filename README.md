@@ -1,6 +1,6 @@
 # Python AceStream
 
-KODI module for (python-acestream)[https://github.com/jonian/python-acestream], an interface to interact with the AceStream Engine and the HTTP API.
+KODI module for [python-acestream](https://github.com/jonian/python-acestream), an interface to interact with the AceStream Engine and the HTTP API.
 
 ## Usage
 
