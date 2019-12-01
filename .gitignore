@@ -1,0 +1,7 @@
+build
+dist
+acestream.egg-info
+test.py
+
+*pycache*
+*.pyc*

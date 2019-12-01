@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.module.acestream" name="acestream" version="0.1.5" provider-name="Jonian">
+  <requires>
+    <import addon="xbmc.python" version="2.25.0" />
+  </requires>
+  <extension point="xbmc.python.module" library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">ACEStream python interface</summary>
+    <description lang="en">Python interface to interact with the AceStream Engine and the HTTP API.</description>
+    <license>GPL-3.0</license>
+    <platform>all</platform>
+    <language></language>
+    <forum></forum>
+    <website>https://github.com/jonian/python-acestream</website>
+    <source>https://github.com/jonian/script.module.acestream</source>
+    <email>jonian@hardpixel.eu</email>
+    <assets>
+      <icon>resources/icon.png</icon>
+    </assets>
+  </extension>
+</addon>
