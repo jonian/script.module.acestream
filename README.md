@@ -8,7 +8,7 @@ You can use this python library as module within your own Kodi scripts/addons. J
 
 ```xml
 <requires>
-  <import addon="script.module.acestream" version="0.1.5" />
+  <import addon="script.module.acestream" version="0.1.8" />
 </requires>
 ```
 
