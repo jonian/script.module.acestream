@@ -21,24 +21,28 @@ class Response(object):
     self.message = self._parse_message(message)
 
   def _parse_message(self, message):
-    if message:
+    if isinstance(message, str):
       message = message.split(']')[-1]
       message = message.lstrip('<').rstrip('>').strip()
       message = '%s%s' % (message[0].upper(), message[1:])
+    elif isinstance(message, dict):
+      message = message.get('message', 'internal server error')
 
-      return message
+    return message
 
 
 class Request(object):
 
-  def __init__(self, host, port=None, scheme='http'):
+  def __init__(self, host, port=None, scheme='http', api_version=None):
     self.base = self._geturl_base(scheme, host, str(port))
+    self.api_version = api_version
 
   def get(self, req_url, **params):
     apiurl = self._geturl(req_url, **params)
     return self._request(apiurl)
 
   def _geturl(self, path, **params):
+    params = self._append_api_version(params)
     params = dict(map(self._parse_param, params.items()))
     params = urlencode(params)
     apiurl = str(path).replace(self.base, '').strip('/')
@@ -68,6 +72,12 @@ class Request(object):
 
     return host
 
+  def _append_api_version(self, params):
+    if self.api_version and not 'api_version' in params:
+      params['api_version'] = self.api_version
+
+    return params
+
   def _get_response_key(self, response, key):
     if response.success:
       return response.data.get(key)
@@ -89,8 +99,10 @@ class Request(object):
 
 class Server(Request):
 
-  def __init__(self, host, port=6878, scheme='http'):
-    Request.__init__(self, host, port, scheme)
+  def __init__(self, host, port=6878, scheme='http', api_token=None, api_version=None):
+    Request.__init__(self, host, port, scheme, api_version)
+
+    self.api_token = api_token
 
   def getservice(self, **params):
     return self.get('webui/api/service', format='json', **params)
@@ -111,7 +123,7 @@ class Server(Request):
     is_hls = params.pop('hls', False)
     apiurl = 'manifest.m3u8' if is_hls else 'getstream'
 
-    if LooseVersion(self.version) < LooseVersion('3.1.29'):
+    if self.version and LooseVersion(self.version) < LooseVersion('3.1.29'):
       params['sid'] = params.pop('pid')
 
     return self.get('ace/{0}'.format(apiurl), format='json', **params)
@@ -130,5 +142,8 @@ class Server(Request):
 
   @property
   def token(self):
-    response = self.gettoken()
-    return self._get_response_key(response, 'token')
+    if not self.api_token:
+      response = self.gettoken()
+      self.api_token = self._get_response_key(response, 'token')
+
+    return self.api_token
